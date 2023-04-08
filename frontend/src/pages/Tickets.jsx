@@ -6,7 +6,7 @@ import TicketItem from '../components/TicketItem'
 import { getTickets, reset } from '../features/tickets/ticketSlice'
 
 const Tickets = () => {
-  const { isLoading, isSuccess, tickets } = useSelector((state) => state.ticket)
+  const { tickets, loading } = useSelector((state) => state.ticket)
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getTickets())
@@ -20,7 +20,7 @@ const Tickets = () => {
   //     }
   //   }, [dispatch, isSuccess])
 
-  if (!tickets) {
+  if (loading) {
     return <Spinner />
   }
 
