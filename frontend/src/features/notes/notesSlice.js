@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import noteService from '../notes/noteService'
 
 const initialState = {
-  notes: null,
+  notes: [],
   loading: false,
 }
 
@@ -72,5 +72,4 @@ export const noteSlice = createSlice({
   },
 })
 
-export const { reset } = noteSlice.actions
 export default noteSlice.reducer

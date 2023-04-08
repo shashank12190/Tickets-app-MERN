@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import BackButton from '../components/BackButton'
 import Spinner from '../components/Spinner'
 import TicketItem from '../components/TicketItem'
-import { getTickets, reset } from '../features/tickets/ticketSlice'
+import { getTickets } from '../features/tickets/ticketSlice'
 
 const Tickets = () => {
   const { tickets, loading } = useSelector((state) => state.ticket)
@@ -11,14 +11,6 @@ const Tickets = () => {
   useEffect(() => {
     dispatch(getTickets())
   }, [dispatch])
-
-  //   useEffect(() => {
-  //     return () => {
-  //       if (isSuccess) {
-  //         dispatch(reset())
-  //       }
-  //     }
-  //   }, [dispatch, isSuccess])
 
   if (loading) {
     return <Spinner />
@@ -35,9 +27,10 @@ const Tickets = () => {
           <div>Status</div>
           <div></div>
         </div>
-        {tickets.map((ticket) => (
-          <TicketItem key={ticket._id} ticket={ticket} />
-        ))}
+        {tickets &&
+          tickets.map((ticket) => (
+            <TicketItem key={ticket._id} ticket={ticket} />
+          ))}
       </div>
     </>
   )

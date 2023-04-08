@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { closeTicket, getTicket, reset } from '../features/tickets/ticketSlice'
 import { toast } from 'react-toastify'
-import BackButton from '../components/BackButton'
-import Spinner from '../components/Spinner'
-import { createNote, getNotes } from '../features/notes/notesSlice'
-import NoteItem from '../components/NoteItem'
 import Modal from 'react-modal'
+import { useDispatch, useSelector } from 'react-redux'
 import { FaPlus } from 'react-icons/fa'
+import { useNavigate, useParams } from 'react-router-dom'
+import { closeTicket, getTicket } from '../features/tickets/ticketSlice'
+import { createNote, getNotes } from '../features/notes/notesSlice'
+import BackButton from '../components/BackButton'
+import NoteItem from '../components/NoteItem'
+import Spinner from '../components/Spinner'
 
 const customStyles = {
   content: {
@@ -38,16 +38,17 @@ const Ticket = () => {
 
   useEffect(() => {
     dispatch(getTicket(ticketId)).unwrap().catch(toast.error)
-    dispatch(getNotes(ticketId))
-    return () => {
-      dispatch(reset())
-    }
+    dispatch(getNotes(ticketId)).unwrap().catch(toast.error)
   }, [dispatch, ticketId])
 
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId))
-    toast.success('Ticket Closed')
-    navigate('/tickets')
+      .unwrap()
+      .then(() => {
+        toast.success('Ticket Closed')
+        navigate('/tickets')
+      })
+      .catch(toast.error)
   }
 
   const openModal = () => {
@@ -61,7 +62,12 @@ const Ticket = () => {
   const onNoteSubmit = (e) => {
     e.preventDefault()
     dispatch(createNote({ noteText, ticketId }))
-    closeModal()
+      .unwrap()
+      .then(() => {
+        setNoteText('')
+        closeModal()
+      })
+      .catch(toast.error)
   }
 
   if (isLoading || loading) {
@@ -128,7 +134,7 @@ const Ticket = () => {
 
       {notes && notes.map((note) => <NoteItem key={note._id} note={note} />)}
 
-      {ticket.status !== 'close' && (
+      {ticket && ticket.status !== 'close' && (
         <button className='btn btn-block btn-danger' onClick={onTicketClose}>
           Close Ticket
         </button>

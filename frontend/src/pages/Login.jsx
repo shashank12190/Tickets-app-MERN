@@ -16,19 +16,24 @@ const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { isLoading, message } = useSelector((state) => state.auth)
+  const { isLoading } = useSelector((state) => state.auth)
 
   const onChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
   const onSubmit = (e) => {
+    e.preventDefault()
     const userData = {
       email,
       password,
     }
-    e.preventDefault()
     dispatch(login(userData))
-    navigate('/')
+      .unwrap()
+      .then((user) => {
+        toast.success(`Logged in as ${user.name}`)
+        navigate('/')
+      })
+      .catch(toast.error)
   }
 
   if (isLoading) {
